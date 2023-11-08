@@ -1,118 +1,151 @@
-package com.example.ecommerce.ecommerce.Implementation;
+package com.example.flight_booking.flight_booking.ServiceImplementation;
 
 
-import com.example.ecommerce.ecommerce.Entity.Email;
-import com.example.ecommerce.ecommerce.Entity.Products;
-import com.example.ecommerce.ecommerce.Entity.checkOut;
-import com.example.ecommerce.ecommerce.Repository.checkOutRepository;
-import com.example.ecommerce.ecommerce.Service.EmailService;
+
+import com.example.flight_booking.flight_booking.BookingRepository.PassengerRepository;
+import com.example.flight_booking.flight_booking.DAOModel.Email;
+import com.example.flight_booking.flight_booking.DAOModel.Passenger;
+import com.example.flight_booking.flight_booking.Service.EmailService;
+import com.itextpdf.kernel.colors.DeviceRgb;
+import com.itextpdf.kernel.pdf.PdfDocument;
+import com.itextpdf.kernel.pdf.PdfWriter;
+import com.itextpdf.layout.Document;
+import com.itextpdf.layout.element.Div;
+import com.itextpdf.layout.element.Paragraph;
+import com.itextpdf.layout.property.TextAlignment;
+import jakarta.mail.MessagingException;
+import jakarta.activation.DataSource;
+import jakarta.mail.internet.InternetAddress;
+import jakarta.mail.internet.MimeMessage;
+import jakarta.mail.util.ByteArrayDataSource;
 import org.bson.types.ObjectId;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.stereotype.Service;
 
-import javax.mail.MessagingException;
-import javax.mail.internet.InternetAddress;
-import javax.mail.internet.MimeMessage;
+import java.io.ByteArrayOutputStream;
 
 
 @Service
 public class EmailServiceImpl implements EmailService {
-    private final JavaMailSender javaMailSender;
 @Autowired
-private checkOutRepository checkOutRepository;
+  private PassengerRepository passengerRepository;
+  private final JavaMailSender javaMailSender;
+  @Autowired
+  public EmailServiceImpl(JavaMailSender javaMailSender) {
+    this.javaMailSender = javaMailSender;
+  }
 
-        @Autowired
-        public EmailServiceImpl(JavaMailSender javaMailSender) {
-            this.javaMailSender = javaMailSender;
-        }
 
-        @Override
-        public void sendEmail(Email email) throws MessagingException {
-            MimeMessage mimeMessage = javaMailSender.createMimeMessage();
-            MimeMessageHelper helper = new MimeMessageHelper(mimeMessage, true);
+  @Override
+  public void sendBookingConfirmationEmail(Email email, ObjectId id, byte[] pdfData) throws MessagingException {
+    MimeMessage mimeMessage = javaMailSender.createMimeMessage();
+    MimeMessageHelper helper = new MimeMessageHelper(mimeMessage, true);
 
-            try {
-                String getSubject = "🍔🥗 Savor the Latest: Exclusive Food Delivery App Updates Await You!";
-                String getBody = "Discover Delights, Delivered to You!\n" +
-                        "\n" +
-                        "Hungry for more? Stay ahead of the flavor curve with our food delivery app updates. From sizzling deals to new menu must-haves, be the first to know about all things delicious. Join now and let your cravings lead the way!";
-                String displayName = "Savor Delights"; // Set the desired display name
-                String fromEmail = "noreply@example.com"; // Set your actual email address
+    try {
+      // Obtain the necessary data for email and ID
+      String toEmail = email.getTo();  // Make sure your Email object contains a valid 'to' address
+      Passenger passengerDetails = passengerRepository.findByIdObject(id).orElse(null);
 
-                helper.setFrom(new InternetAddress(fromEmail, displayName));
-                helper.setTo(email.getTo());
-                helper.setSubject(getSubject);
-                helper.setText(getBody, true);
+      if (passengerDetails == null) {
+        // Handle the case when the passenger with the given id doesn't exist
+        throw new IllegalArgumentException("Passenger not found with ID: " + id);
+      }
 
-                javaMailSender.send(mimeMessage);
+      String subject = "Booking Confirmation - Passenger ID: " + id;
+      String displayName = "Your Airline"; // Set the desired display name
+      String fromEmail = "noreply@example.com"; // Set your actual email address
 
-            } catch (Exception e) {
-                // Handle other exceptions
-                // For example, you may log the error or display a custom error message
-                e.printStackTrace();
-            }
-        }
+      helper.setFrom(new InternetAddress(fromEmail, displayName));
+      helper.setTo(toEmail);
+      helper.setSubject(subject);
 
-    @Override
-    public void order_email(Email email, ObjectId id) throws MessagingException {
-        MimeMessage mimeMessage = javaMailSender.createMimeMessage();
-        MimeMessageHelper helper = new MimeMessageHelper(mimeMessage, true);
+      // Create the HTML content for the email with Bootstrap styling
+      String htmlContent = "<html><head>"
+              + "<link rel=\"stylesheet\" href=\"https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css\">"
+              + "</head><body>"
+              + "<div class=\"container p-4 border rounded\">"
+              + "<h1 class=\"mb-4\">Booking Confirmation</h1>"
+              + "<div class=\"row mb-3\">"
+              + "<div class=\"col-md-6\">"
+              + "<strong>Passenger ID:</strong> " + id + "<br>"
+              + "<strong>Name:</strong> " + passengerDetails.getPersonalName() + "<br>"
+              + "<strong>Email:</strong> " + passengerDetails.getPersonalEmail() + "<br>"
+              + "<strong>Mobile:</strong> " + passengerDetails.getPersonalMobile() + "<br>"
+              + "</div>"
+              + "<div class=\"col-md-6\">"
+              + "<strong>Flight Number:</strong> " + passengerDetails.getFlight().getFlightNumber() + "<br>"
+              + "<strong>Airline:</strong> " + passengerDetails.getFlight().getAirlineName() + "<br>"
+              + "<strong>Departure Airport:</strong> " + passengerDetails.getFlight().getDepartureAirportCode() + "<br>"
+              + "<strong>Arrival Airport:</strong> " + passengerDetails.getFlight().getArrivalAirportCode() + "<br>"
+              // Add more flight details as needed
+              + "</div>"
+              + "</div>"
+              + "</div>"
+              + "</body></html>";
 
-        try {
-            // Obtain the necessary data for email and ID
-            String toEmail = email.getTo();  // Make sure your Email object contains a valid 'to' address
-            // ObjectId id = ...;  // Obtain the order ID, e.g., from a checkOut object
-            checkOut food = checkOutRepository.findById(id).orElse(null);
-            ObjectId Orderid = food.getId();
-            Double Total = food.getTotalAmount();
-            String Food = String.valueOf(food.getProductNames());
+      helper.setText(htmlContent, true);
 
-            String getSubject = "Order Confirmation - Your Order Id " + Orderid;
-            String displayName = "Anonymous"; // Set the desired display name
-            String fromEmail = "noreply@example.com"; // Set your actual email address
+      // Attach the PDF to the email using ByteArrayDataSource
+      DataSource dataSource = new ByteArrayDataSource(pdfData, "application/pdf");
+      helper.addAttachment("FlightDetails.pdf", (jakarta.activation.DataSource) dataSource);
 
-            helper.setFrom(new InternetAddress(fromEmail, displayName));
-            helper.setTo(toEmail);
-            helper.setSubject(getSubject);
-
-            // Create the HTML content for the email
-            String htmlContent = "<html><body>"
-                    + "<h1>Order Confirmation</h1>"
-                    + "<p>Thank you for placing your order with us. Your order for " + Food + " will be on the way soon!</p>"
-                    + "<p>Total Amount: $" + Total + "</p>"
-                    + "<p>Order ID: " + Orderid + "</p>"
-                    + "<p>Order Details:</p>"
-                    + "<ul>";
-
-            // Loop through the product names and add them to the email
-            for (String productName : food.getProductNames()) {
-                htmlContent += "<li>" + productName + "</li>";
-            }
-
-            htmlContent += "</ul>"
-                    + "<p>For order tracking details, please visit our <a href=\"https://yourwebsite.com/order-tracking\">Order Tracking</a> page.</p>"
-                    + "<img src=\"https://yourwebsite.com/images/ecommerce-image.jpg\" alt=\"E-commerce Image\">"
-                    + "<p>Estimated Delivery Date: " + food.getOrderdate() + "</p>"
-                    + "<p>Delivery Address: " + food.getUserInfo().getAddressLine1() +food.getUserInfo().getAddressLine2() +"</p>"
-                    + "</body></html>";
-
-            // Set the HTML content of the email
-            helper.setText(htmlContent, true);
-
-            javaMailSender.send(mimeMessage);
-        } catch (MessagingException e) {
-            // Handle messaging exception
-            throw e;
-        } catch (Exception e) {
-            // Handle other exceptions
-            // For example, you may log the error or display a custom error message
-            e.printStackTrace();
-        }
+      javaMailSender.send(mimeMessage);
+    } catch (MessagingException e) {
+      // Handle messaging exception
+      throw e;
+    } catch (Exception e) {
+      // Handle other exceptions
+      // For example, you may log the error or display a custom error message
+      e.printStackTrace();
     }
+  }
+  @Override
+  public byte[] generateFlightTicketPdf(ObjectId id) {
+    ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+    PdfDocument pdfDocument = new PdfDocument(new PdfWriter(outputStream));
+    try (Document document = new Document(pdfDocument)) {
+      // Apply Bootstrap classes to elements for styling
+      Paragraph header = new Paragraph("Flight Ticket")
+              .setTextAlignment(TextAlignment.CENTER)
+              .setBold()
+              .setFontSize(24) // Set font size directly
+              .setMarginBottom(20); // Set margin directly
+      document.add(header);
 
-    // A utility method to format the date as a string
+      Passenger passengerDetails = passengerRepository.findByIdObject(id).orElse(null);
+
+      if (passengerDetails != null) {
+        Div flightDetails = new Div()
+
+                .add(new Paragraph("Flight Number: " + passengerDetails.getFlight().getFlightNumber()))
+                .add(new Paragraph("From: " + passengerDetails.getFlight().getAirport_from()))
+                .add(new Paragraph("To: " + passengerDetails.getFlight().getAirport_to()))
+                .add(new Paragraph("Seat Number: " + passengerDetails.getFlight().getSeat()))
+                .setMarginBottom(20); // Set margin directly
+        document.add(flightDetails);
+
+        Div passengerDetailsDiv = new Div()
+                .add(new Paragraph("Passenger Name: " + passengerDetails.getPersonalName()))
+                .add(new Paragraph("Mobile Number: " + passengerDetails.getPersonalMobile()))
+                .setMarginBottom(20); // Set margin directly
+        document.add(passengerDetailsDiv);
+
+        // Ticket footer with Bootstrap alert class
+        Paragraph footer = new Paragraph("Thank you for choosing our airline!")
+                .setTextAlignment(TextAlignment.CENTER);
+        DeviceRgb backgroundColor = new DeviceRgb(248, 215, 218); // RGB values for the background color
+        footer.setBackgroundColor(backgroundColor);
+        footer.setFontColor(new DeviceRgb(114, 28, 36)); // RGB values for the text color
+        footer.setPadding(10);
+        document.add(footer);
+      }
+    }
+    return outputStream.toByteArray();
+  }
+
+  // A utility method to format the date as a string
   }
 
 

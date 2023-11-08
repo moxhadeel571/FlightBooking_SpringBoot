@@ -7,16 +7,26 @@
 	<meta name="viewport" content="width=device-width, initial-scale=1">
 	<!-- The above 3 meta tags *must* come first in the head; any other head content must come *after* these tags -->
 
-	<title>Booking Form HTML Template</title>
+	<title>Booking Form </title>
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+	<script src="https://cdn.jsdelivr.net/npm/sweetalert2@10"></script>
+	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
 
 	<!-- Google font -->
 	<link href="https://fonts.googleapis.com/css?family=Lato:400,700" rel="stylesheet">
 
+
 	<!-- Bootstrap -->
-	<link type="text/css" rel="stylesheet" href="css/bootstrap.min.css" />
+	<link type="text/css" rel="stylesheet" href="/css/bootstrap.min.css" />
 
 	<!-- Custom stlylesheet -->
-	<link type="text/css" rel="stylesheet" href="css/style.css" />
+	<link type="text/css" rel="stylesheet" href="/css/style.css" />
+	<script type="text/javascript" src="/JQuery/Effects.js"></script>
+	<script type="text/javascript" src="/JQuery/LocationAPI.js"></script>
+	<script type="text/javascript" src="/JQuery/Flights.js"></script>
+	<script src="../static/JQuery/Flights.js"></script>
+	<!-- 	<script type="text/javascript" src="/JQuery/testing.js"></script> -->
 
 	<!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
 	<!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
@@ -26,8 +36,26 @@
 		<![endif]-->
 
 </head>
+<script>
 
+</script>
 <body>
+<header style="background-color: #333; color: #fff; padding: 15px 0;">
+	<div style="width: 80%; margin: 0 auto; display: flex; align-items: center; justify-content: space-between;">
+		<div>
+			<img src="logo.png" alt="Flight Booking" height="40">
+		</div>
+		<nav>
+			<ul style="list-style: none; padding: 0; display: flex; gap: 20px;">
+				<li><a href="#" style="color: #fff; text-decoration: none;">Home</a></li>
+				<li><a href="#" style="color: #fff; text-decoration: none;">Flights</a></li>
+				<li><a href="#" style="color: #fff; text-decoration: none;">About</a></li>
+				<li><a href="#" style="color: #fff; text-decoration: none;">Contact</a></li>
+			</ul>
+		</nav>
+	</div>
+</header>
+
 	<div id="booking" class="section">
 		<div class="section-center">
 			<div class="container">
@@ -40,56 +68,85 @@
 					</div>
 					<div class="col-md-7 col-md-offset-1">
 						<div class="booking-form">
-							<form>
-								<div class="form-group">
+							<form th:action="@{/customer/search}" method="get" >
+							<div class="form-group">
 									<div class="form-checkbox">
-										<label for="roundtrip">
-											<input type="radio" id="roundtrip" name="flight-type">
-											<span></span>Roundtrip
+										<label class="form-check-label" for="roundtrip">
+											<input class="form-check-input fade show active" type="radio" id="roundtrip" name="Travel_class" aria-selected="true" >
+											<span id="label_roundtrip"></span>Round trip
 										</label>
 										<label for="one-way">
-											<input type="radio" id="one-way" name="flight-type">
-											<span></span>One way
+											<input type="radio" id="one-way" name="Travel_class" >
+											<span id="label_one-way"></span>One way
 										</label>
 										<label for="multi-city">
-											<input type="radio" id="multi-city" name="flight-type">
-											<span></span>Multi-City
-										</label>
+											<input type="radio" id="multi-city" name="Travel_class" checked>
+											<span></span>Multi City
+										</label>Price
 									</div>
+
 								</div>
-								<div class="row">
-									<div class="col-md-6">
-										<div class="form-group">
-											<span class="form-label">Flying from</span>
-											<input class="form-control" type="text" placeholder="City or airport">
+								<div class="form-change" id="form_change">
+									<div class="row">
+										<div class="col-md-6">
+											<div class="form-input">
+												<label class="form-label">Flying from</label>
+												<input class="form-control" name="airport_from" id="airport_from" type="text" placeholder="City or airport">
+												<div class="suggestion-box" id="airport-from"></div>
+											</div>
+										</div>
+										<div class="col-md-6">
+											<div class="form-input">
+												<label class="form-label">Flying to</label>
+												<input class="form-control" name="airport_to" id="airport_to" type="text" placeholder="City or airport">
+												<div class="suggestion-box" id="airport-to"></div>
+											</div>
 										</div>
 									</div>
-									<div class="col-md-6">
-										<div class="form-group">
-											<span class="form-label">Flyning to</span>
-											<input class="form-control" type="text" placeholder="City or airport">
-										</div>
-									</div>
-								</div>
-								<div class="row">
+
+									<div class="row">
 									<div class="col-md-6">
 										<div class="form-group">
 											<span class="form-label">Departing</span>
-											<input class="form-control" type="date" required>
+											<input class="form-control" type="date" id="flight_date" name="departureAirportCode" >
 										</div>
 									</div>
 									<div class="col-md-6">
-										<div class="form-group">
+										<div class="form-group"  >
+											<div id="one_way">
 											<span class="form-label">Returning</span>
-											<input class="form-control" type="date" required>
+											<input class="form-control" type="date" id="arrival_date" name="arrivalAirportCode" >
+										</div>
+										</div>
+									</div>
+									<div  id="changed" >
+									</div>
+									<div class="col-md-6">
+										<div class="form-group" id="AddRoundTrip">
+											<span  class="form-label">Add Other Place</span>
+											<button  type="button"  class="btn btn-primary form-control"  >Click To Add</button>
 										</div>
 									</div>
 								</div>
+
+								</div>
+
 								<div class="row">
 									<div class="col-md-4">
 										<div class="form-group">
 											<span class="form-label">Adults (18+)</span>
-											<select class="form-control">
+											<select class="form-control" id="adults" name="adults">
+												<option>1</option>
+												<option>2</option>
+												<option>3</option>
+											</select>
+											<span class="select-arrow"></span>
+										</div>
+									</div>
+									<div class="col-md-4">
+										<div class="form-group">
+											<span class="form-label">Seniors </span>
+											<select class="form-control" id="seniors" name="seniors">
 												<option>1</option>
 												<option>2</option>
 												<option>3</option>
@@ -100,7 +157,7 @@
 									<div class="col-md-4">
 										<div class="form-group">
 											<span class="form-label">Children (0-17)</span>
-											<select class="form-control">
+											<select class="form-control" id="children" name="children">
 												<option>0</option>
 												<option>1</option>
 												<option>2</option>
@@ -108,21 +165,37 @@
 											<span class="select-arrow"></span>
 										</div>
 									</div>
-									<div class="col-md-4">
-										<div class="form-group">
-											<span class="form-label">Travel class</span>
-											<select class="form-control">
-												<option>Economy class</option>
-												<option>Business class</option>
-												<option>First class</option>
-											</select>
-											<span class="select-arrow"></span>
+									<div class="modal-title" >
+										<div class="form-checkbox">
+											<label class="form-check-label" for="Price">
+												<input   type="radio" id="Price0" name="travelClass" aria-selected="true" >
+												<span id="Economy_class"></span>Economy class
+											</label>
+											<label class="form-check-label" for="Price">
+												<input  type="radio" id="Price1" name="travelClass" aria-selected="true" >
+												<span id="Business_class"></span>Business class
+											</label>
+											<label for="Price">
+												<input type="radio" id="Price-way" name="travelClass" >
+												<span id="First_class"></span>First class
+											</label>
+											<label for="Price">
+												<input type="radio" id="Price" name="travelClass" >
+												<span></span>Premium class
+											</label>
 										</div>
 									</div>
 								</div>
+
 								<div class="form-btn">
-									<button class="submit-btn">Show flights</button>
+									<!-- Button trigger modal -->
+									<button type="submit" class="btn btn-primary btn-lg">
+										Search Flights
+									</button>
+
+									<!-- Modal -->
 								</div>
+
 							</form>
 						</div>
 					</div>
@@ -130,6 +203,56 @@
 			</div>
 		</div>
 	</div>
+<!-- <script> -->
+	<footer class="bg-dark text-light py-5">
+		<div class="container">
+			<div class="row">
+				<div class="col-md-3">
+					<img src="logo.png" alt="Flight Booking" class="img-fluid mb-3">
+					<p>Your trusted partner for hassle-free travel.</p>
+				</div>
+				<div class="col-md-3">
+					<h5><i class="fas fa-envelope"></i> Contact Us</h5>
+					<p>Email: info@example.com</p>
+					<p>Phone: <i class="fas fa-phone"></i> +1 123-456-7890</p>
+				</div>
+				<div class="col-md-3">
+					<h5><i class="fab fa-twitter"></i> Follow Us</h5>
+					<ul class="list-unstyled">
+						<li><a href="#"><i class="fab fa-facebook"></i> Facebook</a></li>
+						<li><a href="#"><i class="fab fa-twitter"></i> Twitter</a></li>
+						<li><a href="#"><i class="fab fa-instagram"></i> Instagram</a></li>
+					</ul>
+				</div>
+				<div class="col-md-3">
+					<h5><i class="fas fa-cogs"></i> More Options</h5>
+					<ul class="list-unstyled">
+						<li><a href="#"><i class="fas fa-plane"></i> Frequent Flyer Program</a></li>
+						<li><a href="#"><i class="fas fa-shield-alt"></i> Travel Insurance</a></li>
+						<li><a href="#"><i class="fas fa-plane-arrival"></i> Flight Status</a></li>
+						<li><a href="#"><i class="fas fa-map-marker-alt"></i> Airport Information</a></li>
+					</ul>
+				</div>
+			</div>
+			<hr class="my-4">
+			<div class="row">
+				<div class="col-md-6">
+					<p>&copy; 2023 Flight Booking. All rights reserved.</p>
+				</div>
+				<div class="col-md-6 text-md-end">
+					<ul class="list-inline">
+						<li class="list-inline-item"><a href="#">Privacy Policy</a></li>
+						<li class="list-inline-item"><a href="#">Terms of Use</a></li>
+					</ul>
+				</div>
+			</div>
+		</div>
+	</footer>
+
+<script>
+
+
+</script>
 </body><!-- This templates was made by Colorlib (https://colorlib.com) -->
 
 </html>

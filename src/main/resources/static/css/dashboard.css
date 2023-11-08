@@ -1,0 +1,33 @@
+.nav .nav-link {
+    color: #333;
+    background-color: salmon;
+    border: 1px solid black;
+    border-radius: 0;
+    transition: background-color 0.3s ease;
+}
+
+.nav .nav-link.active {
+    color: #fff;
+    background-color: #007bff;
+    border-color: #007bff;
+}
+
+.nav .nav-link:hover {
+    background-color: salmon;
+}
+
+.nav .nav-link.disabled {
+    color: #6c757d;
+    background-color: #f8f9fa;
+    border-color: #dee2e6;
+}
+
+.nav .nav-link.disabled:hover {
+    background-color: #f8f9fa;
+}
+.nav{
+    display: flex;
+    justify-content: center;
+    background-color: powderblue;
+    border-style: hidden;
+}

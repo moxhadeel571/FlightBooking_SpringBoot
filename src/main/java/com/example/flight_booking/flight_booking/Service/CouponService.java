@@ -1,15 +1,16 @@
-package com.example.ecommerce.ecommerce.Service;
+package com.example.flight_booking.flight_booking.Service;
 
-import com.example.ecommerce.ecommerce.Entity.Coupon;
-import com.example.ecommerce.ecommerce.Repository.PromocodeRepo;
+import com.example.flight_booking.flight_booking.BookingRepository.PromocodeRepo;
+import com.example.flight_booking.flight_booking.DAOModel.Coupon;
 import org.bson.types.ObjectId;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Optional;
 
-@Service
+@Component
 public class CouponService  {
 
     private final PromocodeRepo couponRepository;

@@ -1,22 +1,16 @@
-package com.example.ecommerce.ecommerce.Service;
+package com.example.flight_booking.flight_booking.Service;
 
-import com.example.ecommerce.ecommerce.Entity.Email;
 
+import com.example.flight_booking.flight_booking.DAOModel.Email;
+
+import jakarta.mail.MessagingException;
 import org.bson.types.ObjectId;
-import org.springframework.stereotype.Component;
-import org.springframework.stereotype.Service;
 
-import javax.mail.MessagingException;
-
-
-@Component
 
 public interface EmailService {
 
 
+    void sendBookingConfirmationEmail(Email email, ObjectId id, byte[] pdfData) throws MessagingException;
 
-    void sendEmail(Email email) throws MessagingException, MessagingException;
-
-
-    void order_email(Email email, ObjectId id) throws MessagingException;
+    byte[] generateFlightTicketPdf(ObjectId id);
 }

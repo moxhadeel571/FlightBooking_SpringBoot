@@ -1,7 +1,6 @@
-package com.example.ecommerce.ecommerce.Service;
+package com.example.flight_booking.flight_booking.Service;
 
-import com.example.ecommerce.ecommerce.Entity.User;
-import com.example.ecommerce.ecommerce.Entity.UserInfo;
+import com.example.flight_booking.flight_booking.DAOModel.User;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -11,6 +10,6 @@ public interface UserService {
 
  User saveUser(User User);
 
- public void removeSuccessMessage();
 
+ void removeSuccessMessage();
 }

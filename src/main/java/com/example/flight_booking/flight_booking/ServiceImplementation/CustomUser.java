@@ -1,6 +1,6 @@
-package com.example.ecommerce.ecommerce.Implementation;
+package com.example.flight_booking.flight_booking.ServiceImplementation;
 
-import com.example.ecommerce.ecommerce.Entity.User;
+import com.example.flight_booking.flight_booking.DAOModel.User;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;

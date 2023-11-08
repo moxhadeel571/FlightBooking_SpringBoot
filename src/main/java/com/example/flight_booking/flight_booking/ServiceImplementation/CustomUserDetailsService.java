@@ -1,7 +1,7 @@
-package com.example.ecommerce.ecommerce.Implementation;
+package com.example.flight_booking.flight_booking.ServiceImplementation;
 
-import com.example.ecommerce.ecommerce.Entity.User;
-import com.example.ecommerce.ecommerce.Repository.UserRepository;
+import com.example.flight_booking.flight_booking.BookingRepository.UserRepository;
+import com.example.flight_booking.flight_booking.DAOModel.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;

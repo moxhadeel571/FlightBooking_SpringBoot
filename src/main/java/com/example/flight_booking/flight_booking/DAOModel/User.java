@@ -1,4 +1,4 @@
-package com.example.ecommerce.ecommerce.Entity;
+package com.example.flight_booking.flight_booking.DAOModel;
 
 import lombok.*;
 import org.springframework.data.mongodb.core.mapping.Document;

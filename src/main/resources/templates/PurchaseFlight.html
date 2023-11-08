@@ -1,10 +1,790 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
-  <meta charset="UTF-8">
-  <title>$Title$</title>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>Flight Ticket Purchase</title>
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet"
+
+	      integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
+	<script src=" https://cdn.jsdelivr.net/npm/sweetalert2@11.9.0/dist/sweetalert2.all.min.js "></script>
+	<script type="text/javascript" src="/JQuery/Effects.js"></script>
+	<script type="text/javascript" src="/JQuery/LocationAPI.js"></script>
+	<script type="text/javascript" defer src="/JQuery/Flights.js"></script>
+	<!-- SweetAlert CDN -->
+	<script src="https://cdn.jsdelivr.net/npm/sweetalert2@10"></script>
+
+	<script src="../static/JQuery/Flights.js"></script>
+	<style>
+        .master-container {
+            display: grid;
+            grid-template-columns: auto;
+            gap: 5px;
+        }
+
+        .card {
+            width: 400px;
+            background: #FFFFFF;
+            box-shadow: 0px 187px 75px rgba(0, 0, 0, 0.01), 0px 105px 63px rgba(0, 0, 0, 0.05), 0px 47px 47px rgba(0, 0, 0, 0.09), 0px 12px 26px rgba(0, 0, 0, 0.1), 0px 0px 0px rgba(0, 0, 0, 0.1);
+        }
+
+        .title {
+            width: 100%;
+            height: 40px;
+            position: relative;
+            display: flex;
+            align-items: center;
+            padding-left: 20px;
+            border-bottom: 1px solid #efeff3;
+            font-weight: 700;
+            font-size: 11px;
+            color: #63656b;
+        }
+
+        /* cart */
+        .cart {
+            border-radius: 19px 19px 7px 7px;
+        }
+
+        .cart .products {
+            display: flex;
+            flex-direction: column;
+            padding: 10px;
+        }
+
+        .cart .products .product {
+            display: grid;
+            grid-template-columns: 60px 1fr 80px 1fr;
+            gap: 10px;
+        }
+
+        .cart .products .product span {
+            font-size: 13px;
+            font-weight: 600;
+            color: #47484b;
+            margin-bottom: 8px;
+            display: block;
+        }
+
+        .cart .products .product p {
+            font-size: 11px;
+            font-weight: 600;
+            color: #7a7c81;
+        }
+
+        .cart .quantity {
+            height: 30px;
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr;
+            margin: auto;
+            background-color: #ffffff;
+            border: 1px solid #e5e5e5;
+            border-radius: 7px;
+            filter: drop-shadow(0px 1px 0px #efefef)
+            drop-shadow(0px 1px 0.5px rgba(239, 239, 239, 0.5));
+        }
+
+        .cart .quantity label {
+            width: 20px;
+            height: 30px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding-bottom: 2px;
+            font-size: 15px;
+            font-weight: 700;
+            color: #47484b;
+        }
+
+        .cart .quantity button {
+            width: 30px;
+            height: 30px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border: 0;
+            outline: none;
+            background-color: transparent;
+            padding-bottom: 2px;
+        }
+
+        .card .small {
+            font-size: 15px;
+            margin: 0 0 auto auto;
+        }
+
+        .card .small sup {
+            font-size: 15px;
+        }
+
+        /* coupons */
+        .coupons {
+            border-radius: 7px;
+        }
+
+        .coupons form {
+            display: grid;
+            grid-template-columns: 1fr 80px;
+            gap: 10px;
+            padding: 10px;
+        }
+
+        .input_field {
+            width: auto;
+            height: 36px;
+            padding: 0 0 0 12px;
+            border-radius: 5px;
+            outline: none;
+            border: 1px solid #e5e5e5;
+            filter: drop-shadow(0px 1px 0px #efefef)
+            drop-shadow(0px 1px 0.5px rgba(239, 239, 239, 0.5));
+            transition: all 0.3s cubic-bezier(0.15, 0.83, 0.66, 1);
+        }
+
+        .input_field:focus {
+            border: 1px solid transparent;
+            box-shadow: 0px 0px 0px 2px #242424;
+            background-color: transparent;
+        }
+
+        .coupons form button {
+            display: flex;
+            flex-direction: row;
+            justify-content: center;
+            align-items: center;
+            padding: 10px 18px;
+            gap: 10px;
+            width: 100%;
+            height: 36px;
+            background: linear-gradient(180deg, #4480FF 0%, #115DFC 50%, #0550ED 100%);
+            box-shadow: 0px 0.5px 0.5px #EFEFEF, 0px 1px 0.5px rgba(239, 239, 239, 0.5);
+            border-radius: 5px;
+            border: 0;
+            font-style: normal;
+            font-weight: 600;
+            font-size: 12px;
+            line-height: 15px;
+            color: #ffffff;
+        }
+
+        /* Checkout */
+        .checkout {
+            border-radius: 9px 9px 19px 19px;
+        }
+
+        .checkout .details {
+            display: grid;
+            grid-template-columns: 3fr 1fr;
+            padding: 10px;
+            gap: 5px;
+        }
+
+        .checkout .details span {
+            font-size: 13px;
+            font-weight: 600;
+        }
+
+        .checkout .details span:nth-child(odd) {
+            font-size: 11px;
+            font-weight: 700;
+            color: #707175;
+            margin: auto auto auto 0;
+        }
+
+        .checkout .details span:nth-child(even) {
+            font-size: 13px;
+            font-weight: 600;
+            color: #47484b;
+            margin: auto 0 auto auto;
+        }
+
+        .checkout .checkout--footer {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 10px 10px 10px 20px;
+            background-color: #efeff3;
+        }
+
+        .price {
+            position: relative;
+            font-size: 22px;
+            color: #2B2B2F;
+            font-weight: 900;
+        }
+
+        .price sup {
+            font-size: 13px;
+        }
+
+        .price sub {
+            width: fit-content;
+            position: absolute;
+            font-size: 11px;
+            color: #5F5D6B;
+            bottom: 5px;
+            display: inline-block;
+        }
+
+        .checkout .checkout-btn {
+            display: flex;
+            flex-direction: row;
+            justify-content: center;
+            align-items: center;
+            width: 150px;
+            height: 36px;
+            background: linear-gradient(180deg, #4480FF 0%, #115DFC 50%, #0550ED 100%);
+            box-shadow: 0px 0.5px 0.5px #EFEFEF, 0px 1px 0.5px rgba(239, 239, 239, 0.5);
+            border-radius: 7px;
+            border: 0;
+            outline: none;
+            color: #ffffff;
+            font-size: 13px;
+            font-weight: 600;
+            transition: all 0.3s cubic-bezier(0.15, 0.83, 0.66, 1);
+        }
+        *,*:before,*:after {
+            box-sizing: border-box;
+        }
+        html {
+            font-size: 16px;
+        }
+
+        .plane {
+            margin: 20px auto;
+            max-width: 300px;
+        }
+
+        .cockpit {
+            height: 250px;
+            position: relative;
+            overflow: hidden;
+            text-align: center;
+            border-bottom: 5px solid #d8d8d8;
+            &:before {
+                content: "";
+                display: block;
+                position: absolute;
+                top: 0;
+                left: 0;
+                height: 500px;
+                width: 100%;
+                border-radius: 50%;
+                border-right: 5px solid #d8d8d8;
+                border-left: 5px solid #d8d8d8;
+            }
+
+        }
+
+        .exit {
+            position: relative;
+            height: 50px;
+            &:before,
+            &:after {
+                content: "EXIT";
+                font-size: 14px;
+                line-height: 18px;
+                padding: 0px 2px;
+                font-family: "Arial Narrow", Arial, sans-serif;
+                display: block;
+                position: absolute;
+                background: green;
+                color: white;
+                top: 50%;
+                transform: translate(0, -50%);
+            }
+            &:before {
+                left: 0;
+            }
+            &:after {
+                right: 0;
+            }
+        }
+
+        .fuselage {
+            border-right: 5px solid #d8d8d8;
+            border-left: 5px solid #d8d8d8;
+        }
+
+        ol {
+            list-style :none;
+            padding: 0;
+            margin: 0;
+        }
+
+        .row {
+
+        }
+
+        .seats {
+            display: flex;
+            flex-direction: row;
+            flex-wrap: nowrap;
+            justify-content: flex-start;
+        }
+
+        .seat {
+            display: flex;
+            flex: 0 0 14.28571428571429%;
+            padding: 5px;
+            position: relative;
+            &:nth-child(3) {
+                margin-right: 14.28571428571429%;
+            }
+            input[type=checkbox] {
+                position: absolute;
+                opacity: 0;
+            }
+            input[type=checkbox]:checked {
+                + label {
+                    background: #bada55;
+                    -webkit-animation-name: rubberBand;
+                    animation-name: rubberBand;
+                    animation-duration: 300ms;
+                    animation-fill-mode: both;
+                }
+            }
+            input[type=checkbox]:disabled {
+                + label {
+                    background: #dddddd;
+                    text-indent: -9999px;
+                    overflow: hidden;
+                    &:after {
+                        content: "X";
+                        text-indent: 0;
+                        position: absolute;
+                        top: 4px;
+                        left: 50%;
+                        transform: translate(-50%, 0%);
+                    }
+                    &:hover {
+                        box-shadow: none;
+                        cursor: not-allowed;
+                    }
+                }
+            }
+            label {
+                display: block;
+                position: relative;
+                width: 100%;
+                text-align: center;
+                font-size: 14px;
+                font-weight: bold;
+                line-height: 1.5rem;
+                padding: 4px 0;
+                background: #F42536;
+                border-radius: 5px;
+                animation-duration: 300ms;
+                animation-fill-mode: both;
+
+                &:before {
+                    content: "";
+                    position: absolute;
+                    width: 75%;
+                    height: 75%;
+                    top: 1px;
+                    left: 50%;
+                    transform: translate(-50%, 0%);
+                    background: rgba(255,255,255,.4);
+                    border-radius: 3px;
+                }
+                &:hover {
+                    cursor: pointer;
+                    box-shadow: 0 0 0px 2px #5C6AFF;
+                }
+
+            }
+        }
+
+        @-webkit-keyframes rubberBand {
+            0% {
+                -webkit-transform: scale3d(1, 1, 1);
+                transform: scale3d(1, 1, 1);
+            }
+
+            30% {
+                -webkit-transform: scale3d(1.25, 0.75, 1);
+                transform: scale3d(1.25, 0.75, 1);
+            }
+
+            40% {
+                -webkit-transform: scale3d(0.75, 1.25, 1);
+                transform: scale3d(0.75, 1.25, 1);
+            }
+
+            50% {
+                -webkit-transform: scale3d(1.15, 0.85, 1);
+                transform: scale3d(1.15, 0.85, 1);
+            }
+
+            65% {
+                -webkit-transform: scale3d(.95, 1.05, 1);
+                transform: scale3d(.95, 1.05, 1);
+            }
+
+            75% {
+                -webkit-transform: scale3d(1.05, .95, 1);
+                transform: scale3d(1.05, .95, 1);
+            }
+
+            100% {
+                -webkit-transform: scale3d(1, 1, 1);
+                transform: scale3d(1, 1, 1);
+            }
+        }
+
+        @keyframes rubberBand {
+            0% {
+                -webkit-transform: scale3d(1, 1, 1);
+                transform: scale3d(1, 1, 1);
+            }
+
+            30% {
+                -webkit-transform: scale3d(1.25, 0.75, 1);
+                transform: scale3d(1.25, 0.75, 1);
+            }
+
+            40% {
+                -webkit-transform: scale3d(0.75, 1.25, 1);
+                transform: scale3d(0.75, 1.25, 1);
+            }
+
+            50% {
+                -webkit-transform: scale3d(1.15, 0.85, 1);
+                transform: scale3d(1.15, 0.85, 1);
+            }
+
+            65% {
+                -webkit-transform: scale3d(.95, 1.05, 1);
+                transform: scale3d(.95, 1.05, 1);
+            }
+
+            75% {
+                -webkit-transform: scale3d(1.05, .95, 1);
+                transform: scale3d(1.05, .95, 1);
+            }
+
+            100% {
+                -webkit-transform: scale3d(1, 1, 1);
+                transform: scale3d(1, 1, 1);
+            }
+        }
+
+        .rubberBand {
+            -webkit-animation-name: rubberBand;
+            animation-name: rubberBand;
+        }
+	</style>
 </head>
+
 <body>
-$END$
+<br>
+<div class="container">
+
+	<div class="row mt-5">
+
+		<!-- Flight Details Section (Left Side) -->
+		<div class="col-md-7">
+
+			<div class="card_item mb-4">
+				<div class=" coupons">
+					<div th:if="${couponCode}" class="alert alert-success alert-dismissible fade show" role="alert">
+						Coupon Redeemed: <strong th:text="${couponCode}"></strong><br>
+						Discount Percentage: <strong th:text="${discountPercentage}"></strong><br>
+						New Total Price: <strong th:text="${newTotalSum}"></strong>
+						<button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close">
+							<span aria-hidden="true">&times;</span>
+						</button>
+					</div>
+				</div>
+	<div class="card  mb-4" style="padding: 10px" th:each="flightdata:${flight}">
+			<div class="d-flex justify-content-between align-items-center mb-3">
+				<div class="card-text">
+					<strong name="airport_from" th:text="${flightdata.airport_from}"></strong>
+					-
+					<strong th:text="${flightdata.airport_to}"></strong>
+				</div>
+				<span class="badge bg-primary rounded-pill" th:text="${flightdata.travelClass}"></span>
+			</div>
+
+			<h6 class="text-primary mb-3">
+				<span>Departure:</span>
+				<strong th:text="${flightdata.departureDateTime}" class="text-dark"></strong>
+			</h6>
+
+			<h6 class="text-primary mb-3">
+				<span>Arrival:</span>
+				<strong th:text="${flightdata.arrivalDateTime}" class="text-dark"></strong>
+			</h6>
+
+			<div class="d-flex mb-3 align-items-center">
+				<i class="fa-solid fa-location-dot me-2"></i>
+				<strong>From:</strong>
+				<span th:text="${flightdata.airport_from}" class="ms-2 me-3"></span>
+				<span class="badge bg-secondary" th:text="${flightdata.Terminal}"></span>
+			</div>
+
+			<div class="d-flex align-items-center">
+				<i class="fa-solid fa-location-dot me-2"></i>
+				<strong>To:</strong>
+				<span th:text="${flightdata.airport_to}" class="ms-2 me-3"></span>
+				<span class="badge bg-secondary" th:text="${flightdata.Terminal}"></span>
+			</div>
+			<hr>
+			<div class="footer">
+				<div class="card_item">
+					<div class="d-flex">
+						<div class="p-2 flex-fill"> <p class="text-bold" >
+							Cab In -
+							<i class="fa-solid fa-cabin"></i>
+							<span th:text="${flightdata.cabIn}">
+
+								</span>
+						</p><p >
+							Baggage -KG
+							<i class="fa-solid fa-suitcase-rolling"></i>
+							<span th:text="${flightdata.Baggage}">
+								</span>
+
+						</p></div>
+					</div>
+					<div class="card-text">
+						<span>
+
+
+						</span>
+					</div>
+				</div>
+
+			</div>
+		</div>
+		</div>
+		</div>
+
+		<div class="col-md-5">
+			<div class="master-container">
+				<div class="card cart" th:each="flight:${flight}">
+					<label class="title">Your Ticket</label>
+					<div class="products">
+						<div class="product">
+                    <span>
+                        <i class="fas fa-plane fa-2xl" aria-hidden="true"></i>
+                    </span>
+							<div>
+								<span>Total</span>
+							</div>
+							<label class="price small" th:text="${flight.price}"></label>
+						</div>
+						<div class="col">
+
+							<div class="form-group">
+								<form th:action="@{/customer/redeem-promo/{id}(id=${id})}" method="post">
+								<label for="couponCode">Enter Coupon Code:</label>
+								<input type="text" id="couponCode" name="couponCode" class="form-control" placeholder="Enter coupon code">
+								<button type="submit" class="btn btn-primary">Redeem Coupon</button>
+								</form>
+							</div>
+						</div>
+					</div>
+				</div>
+				<!-- Display the discounted price if available -->
+
+				<div class="card checkout">
+					<label class="title">Checkout</label>
+					<div class="details">
+						<span>Your Ticket subtotal:</span>
+						<span th:text="${total}"></span>
+						<span>Discount through applied coupons:</span>
+						<span th:text="${discountPercentage}">
+							<p>Percent</p>
+						</span>
+					</div>
+					<div class="checkout--footer">
+						<label class="price" ><h1 th:text="${newTotalSum}"></h1></label>
+						<button class="checkout-btn">Checkout</button>
+					</div>
+				</div>
+			</div>
+		</div>
+
+		<br>
+
+		<br>
+		<hr class="border border-danger border-2 opacity-50">
+
+		<form th:action="@{/customers/  /{id}(id=${flight.id})}" method="post">
+			<div class="card" style="width: 50rem;">
+
+<div class="container my-5">
+	<div class="row">
+		<!-- Pre-Flight Checklist Section -->
+		<div class="col-md-7">
+			<div class="card_item mb-3">
+				<div class="card-body">
+					<h5 class="card-title">Pre-Flight Checklist</h5>
+					<p>If you have arrived on any international flight and are taking a connecting domestic flight,
+					   please check the 'Travelling to India' tab <a href="#">HERE</a>.</p>
+					<p><strong>DISCLAIMER:</strong> We strongly recommend that you check the full text of the
+					                                guidelines issued by the State Governments and Airlines before travelling to ensure smooth
+					                                travel. We accept no liability in this regard.</p>
+				</div>
+			</div>
+		</div>
+		<!-- Flight Details and Price Section -->
+		<!-- ... (your existing flight details and price section) ... -->
+	</div>
+</div>
+
+
+			</div>
+			<br>
+			<hr class="border border-danger border-2 opacity-50" style="margin-top: 20px">
+
+<div class="container my-5">
+<div class="row">
+	<div class="col-md-7">
+		<h5>Your Pincode and State</h5>
+		<p>(Required for GST purpose on your tax invoice. You can edit this anytime later in your profile section.)</p>
+
+		<!-- Billing Address Form -->
+			<div class="mb-3">
+				<label for="billingAddress" class="form-label">Enter Billing Address</label>
+				<textarea class="form-control" id="billingAddress" name="billingAddress"  rows="3" required></textarea>
+			</div>
+
+			<div class="mb-3">
+				<label for="pincode" class="form-label">Enter Pincode</label>
+				<input type="text" class="form-control" id="pincode" name="pincode" required>
+			</div>
+
+			<div class="mb-3">
+				<label for="state" class="form-label">State</label>
+				<input type="text" class="form-control" id="state" name="state" value="Telangana" >
+			</div>
+
+		<input class="form-check-input" name="saveAddress" type="checkbox" value="" id="flexCheckDefault">
+		<label class="form-check-label" for="flexCheckDefault">Confirm and Save Billing Details</label>
+	</div>
+
+	<!-- Flight Details and Price Section -->
+
+
+</div> <div class="container my-5">
+	<ul class="nav nav-tabs" id="travelerTabs" role="tablist">
+		<li class="nav-item" role="presentation">
+			<a class="nav-link active" id="personal-tab" data-bs-toggle="tab" href="#personal" role="tab"
+			   aria-controls="personal" aria-selected="true">Personal</a>
+		</li>
+		<li class="nav-item" role="presentation">
+			<a class="nav-link" id="business-tab" data-bs-toggle="tab" href="#business" role="tab"
+			   aria-controls="business" aria-selected="false">Business</a>
+		</li>
+	</ul>
+	<div class="tab-content" id="travelerTabsContent">
+		<!-- Personal Tab Content -->
+		<div class="tab-pane fade show active" id="personal" role="tabpanel" aria-labelledby="personal-tab">
+			<h5 class="my-3">Personal Traveller Details</h5>
+			<div class="alert alert-warning" role="alert">
+				NOTE: Please make sure you enter the Name as per your govt. photo ID.
+			</div>
+			<!-- Personal Traveller Form Fields -->
+				<div class="mb-3">
+					<i class="fa-solid fa-user"></i>
+					<label for="personalName" class="form-label">Adult 1 Name</label>
+					<input type="text" class="form-control" id="personalName" name="personalName" placeholder="Enter name">
+				</div>
+				<div class="mb-3">
+					<label for="email" class="form-label">Email Address</label>
+					<input type="email" class="form-control" name="to" id="personalEmail" placeholder="Enter email">
+				</div>
+				<div class="mb-3">
+					<label for="personalMobile" class="form-label">Mobile Number</label>
+					<div class="input-group">
+						<span class="input-group-text">+91</span>
+						<input type="text" class="form-control" name="personalMobile" id="personalMobile" placeholder="Enter mobile number">
+					</div>
+				</div>
+		</div>
+
+		<!-- Business Tab Content -->
+		<div class="tab-pane fade" id="business" role="tabpanel" aria-labelledby="business-tab">
+			<h5 class="my-3">Business Traveller Details</h5>
+			<div class="alert alert-warning" role="alert">
+				NOTE: Please make sure you enter the Name as per your govt. photo ID.
+			</div>
+			<!-- Business Traveller Form Fields -->
+				<div class="mb-3">
+					<i class="fa-solid fa-user"></i>
+					<label for="businessName" class="form-label">Adult 1 Name</label>
+					<input type="text" class="form-control" name="business" id="businessName" placeholder="Enter name">
+				</div>
+				<div class="mb-3">
+					<label for="email" class="form-label">Email Address</label>
+					<input type="email" class="form-control" name="email.to" id="email" placeholder="Enter email">
+				</div>
+				<div class="mb-3">
+					<label for="businessMobile" class="form-label">Mobile Number</label>
+					<div class="input-group">
+						<span class="input-group-text">+91</span>
+						<input type="text" class="form-control" name="business" id="businessMobile" placeholder="Enter mobile number">
+					</div>
+				</div>
+		</div>
+		<hr class="border border-danger border-2 opacity-50" style="margin-top: 20px">
+		<div class="container my-5 justify-content-end">
+
+			<div class="form-group">
+				<label for="seat">Select Seat:</label>
+				<select id="seat" name="seats" class="form-control">
+					<option th:each="seat : ${allSeats}" th:value="${seat}" th:text="${seat}"></option>
+				</select>
+			</div>
+
+		</div>
+		<div class="container my-5 justify-content-end">
+
+
+
+	</div>
+
+	</div>
+	<div class="form-group">
+		<input type="submit" onsubmit="bookFlight()" class="btn btn-lg btn-outline-success d-grid gap-2 col-6 mx-auto" value="Check out" >
+	</div>
+
+
+
+</div>
+</div>
+	</form>
+	</div>
+	</div>
+<script src="https://code.jquery.com/jquery-3.6.3.js"
+        integrity="sha256-nQLuAZGRRcILA+6dMBOvcRh5Pe310sBpanc6+QBmyVM=" crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL"
+        crossorigin="anonymous"></script>
+<script>
+
+    // Assume you have a function for booking the flight
+    function bookFlight() {
+        // Logic for booking the flight...
+
+        // After successful booking, trigger Sweet Alert
+        Swal.fire({
+            title: 'Flight Booked!',
+            text: 'Your flight has been booked. Check your email for the ticket.',
+            icon: 'success',
+            confirmButtonText: 'OK'
+        });
+    }
+
+	
+
+</script>
 </body>
+
 </html>

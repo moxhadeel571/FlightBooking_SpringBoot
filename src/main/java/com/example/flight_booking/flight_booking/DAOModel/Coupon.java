@@ -1,4 +1,4 @@
-package com.example.ecommerce.ecommerce.Entity;
+package com.example.flight_booking.flight_booking.DAOModel;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.*;

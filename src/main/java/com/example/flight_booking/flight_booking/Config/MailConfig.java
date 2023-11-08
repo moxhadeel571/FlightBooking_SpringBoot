@@ -1,12 +1,12 @@
-package com.example.ecommerce.ecommerce.Config;
+package com.example.flight_booking.flight_booking.Config;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.JavaMailSenderImpl;
 
-import java.util.Properties;
 
+import java.util.Properties;
 @Configuration
 public class MailConfig<C, S> {
     @Bean

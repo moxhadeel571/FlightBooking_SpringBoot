@@ -1,7 +1,7 @@
-package com.example.ecommerce.ecommerce.Controller;
+package com.example.flight_booking.flight_booking.Controller;
 
-import com.example.ecommerce.ecommerce.Entity.User;
-import com.example.ecommerce.ecommerce.Service.UserService;
+import com.example.flight_booking.flight_booking.DAOModel.User;
+import com.example.flight_booking.flight_booking.Service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;

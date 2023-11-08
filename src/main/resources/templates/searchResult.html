@@ -1,10 +1,172 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
-  <meta charset="UTF-8">
-  <title>$Title$</title>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>Flight Search</title>
+	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+	<script type="text/javascript" src="/JQuery/LocationAPI.js"></script>
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
 </head>
+<style>
+    .card {
+        max-width: 650px;
+    }
+    .card-img-top{
+        max-height: 200px;
+        object-fit: cover;
+    }
+
+</style>
 <body>
-$END$
+<h1 class="title">Flight Search</h1>
+<!-- Flight Search Form -->
+<h2 class="subtitle">Search Results</h2>
+<br>
+<br>
+<div class="content" >
+	<h1 class="result" th:unless="${flights != null and flights.size() > 0}">
+
+		Flights Not found
+	</h1>
+</div>
+<br>
+<br>
+
+<section class="section">
+	<div class="container mt-5">
+		<li th:if="${flights != null and flights.size() > 0}">
+			<div class="row gap-2 ">
+				<div class="card" th:each="flightdata:${flights}">
+					<img src="https://akm-img-a-in.tosshub.com/businesstoday/images/story/202301/ezgif-sixteen_nine_355.jpg?size=948:533"
+					     class="card-img-top" alt="Flight Image">
+					<div class="card-body">
+						<h5 class="card-title">
+							<i class="fas fa-solid fa-plane-arrival"></i>
+							<strong>Flight Details</strong>
+						</h5>
+						<p class="card-text" >Flight Number: <strong th:text="${flightdata.flightNumber}"></strong></p>
+						<p class="card-text" >Departure: <strong th:text="${flightdata.departureAirportCode}"></strong></p>
+						<p class="card-text">Arrival: <strong th:text="${flightdata.arrivalAirportCode}"></strong></p>
+
+						<!-- Nav tabs -->
+
+						<a th:href="@{/customers/purchase/{id}(id=${flightdata.id})}" class="btn btn-outline-warning btn-lg">Purchase Ticket</a>
+					</div>
+				</div>
+			</div>
+	</div>
+	<br>
+	<div class="container-fluid">
+		<ul class="nav nav-tabs d-flex justify-content-center" id="myTab" role="tablist">
+			<li class="nav-item" role="presentation">
+				<a class="nav-link" id="baggage-info-tab" data-bs-toggle="tab" href="#baggage-info "
+				   role="tab" aria-controls="baggage-info" aria-selected="true" >Baggage Information</a>
+			</li>
+			<li class="nav-item" role="presentation">
+				<a class="nav-link" id="cancellation-tab" data-bs-toggle="tab" href="#cancellation"
+				   role="tab" aria-controls="cancellation" aria-selected="false">Cancellation Charges</a>
+			</li>
+			<li class="nav-item" role="presentation">
+				<a class="nav-link" id="reschedule-tab" data-bs-toggle="tab" href="#reschedule"
+				   role="tab" aria-controls="reschedule" aria-selected="false">Reschedule Charges</a>
+			</li>
+		</ul>
+
+		<!-- Tab panes -->
+		<div class="tab-content mt-3">
+			<div class="tab-pane fade show active" id="baggage-info" role="tabpanel"
+			     aria-labelledby="baggage-info-tab">
+				<table class="table">
+					<thead>
+					<tr>
+						<th scope="col">Baggage Type</th>
+						<th scope="col">Check-In</th>
+						<th scope="col">Cabin</th>
+						<th scope="col">ADULT</th>
+					</tr>
+					</thead>
+					<tbody>
+					<tr>
+						<td>15 Kgs (1 piece only)</td>
+						<td>Allowed</td>
+						<td>Not Allowed</td>
+						<td>Allowed</td>
+					</tr>
+					<tr>
+						<td>5 Kgs (1 piece only)</td>
+						<td>Not Allowed</td>
+						<td>Allowed</td>
+						<td>Allowed</td>
+					</tr>
+					</tbody>
+				</table>
+			</div>
+			<div class="tab-pane fade" id="cancellation" role="tabpanel"
+			     aria-labelledby="cancellation-tab">
+				<table class="table">
+					<thead>
+					<tr>
+						<th scope="col">If Cancelled</th>
+						<th scope="col">Charges</th>
+					</tr>
+					</thead>
+					<tbody>
+					<tr>
+						<td>0-2 hours</td>
+						<td>Non Refundable</td>
+					</tr>
+					<tr>
+						<td>2-72 hours</td>
+						<td>₹3,267</td>
+					</tr>
+					<tr>
+						<td>&gt;72 hours</td>
+						<td>₹3,150</td>
+					</tr>
+					</tbody>
+				</table>
+			</div>
+			<div class="tab-pane fade" id="reschedule" role="tabpanel"
+			     aria-labelledby="reschedule-tab">
+				<table class="table">
+					<thead>
+					<tr>
+						<th scope="col">If Rescheduled</th>
+						<th scope="col">Charges</th>
+					</tr>
+					</thead>
+					<tbody>
+					<tr>
+						<td>0-2 hours</td>
+						<td>Not Changeable</td>
+					</tr>
+					<tr>
+						<td>&gt;2 hours</td>
+						<td>₹2,625</td>
+					</tr>
+					</tbody>
+				</table>
+			</div>
+		</div>
+	</div>
+
+	<!-- Flight Search Results -->
+</section>
+
+<script src="https://code.jquery.com/jquery-3.6.3.js" integrity="sha256-nQLuAZGRRcILA+6dMBOvcRh5Pe310sBpanc6+QBmyVM=" crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL" crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.8/dist/umd/popper.min.js" integrity="sha384-I7E8VVD/ismYTF4hNIPjVp/Zjvgyol6VFvRkX/vR+Vc4jQkC+hVqc2pM8ODewa9r" crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.min.js" integrity="sha384-BBtl+eGJRgqQAUMxJ7pMwbEyER4l1g+O15P+16Ep7Q9Q+zqX6gSbd85u4mG4QzX+" crossorigin="anonymous"></script>
+<script>
+    $(document).ready(function() {
+        $('#view_init').click(function() {
+            $('#more_details').show();
+        });
+    });
+</script>
+
 </body>
+
 </html>

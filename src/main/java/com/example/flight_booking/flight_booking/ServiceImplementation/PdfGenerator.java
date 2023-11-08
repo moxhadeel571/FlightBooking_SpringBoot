@@ -1,4 +1,4 @@
-package com.example.flight_booking.flight_booking.Config;
+package com.example.flight_booking.flight_booking.ServiceImplementation;
 
 import com.example.flight_booking.flight_booking.BookingRepository.PassengerRepository;
 import com.example.flight_booking.flight_booking.DAOModel.Passenger;
@@ -6,6 +6,8 @@ import com.itextpdf.kernel.colors.DeviceRgb;
 import com.itextpdf.kernel.pdf.PdfDocument;
 import org.bson.types.ObjectId;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 
 import com.itextpdf.kernel.pdf.PdfWriter;
@@ -17,7 +19,7 @@ import com.itextpdf.layout.property.TextAlignment;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 
-@Service
+@Configuration
 public class PdfGenerator {
 @Autowired
     private static PassengerRepository passengerRepository ;
@@ -44,9 +46,7 @@ public class PdfGenerator {
                         .add(new Paragraph("Flight Number: " + passengerDetails.getFlight().getFlightNumber()))
                         .add(new Paragraph("From: " + passengerDetails.getFlight().getAirport_from()))
                         .add(new Paragraph("To: " + passengerDetails.getFlight().getAirport_to()))
-                        .add(new Paragraph("Arrival Date: " + passengerDetails.getFlight().getArrivalDateTime()))
-                        .add(new Paragraph("Departure Date: " + passengerDetails.getFlight().getDepartureDateTime()))
-                        .add(new Paragraph("Seat Number: " + passengerDetails.getFlight().getSeat()))
+                        .add(new Paragraph("Seat Number: " + passengerDetails.getSeats()))
                         .setMarginBottom(20); // Set margin directly
                 document.add(flightDetails);
 

@@ -1,6 +1,6 @@
-package com.example.ecommerce.ecommerce.Repository;
+package com.example.flight_booking.flight_booking.BookingRepository;
 
-import com.example.ecommerce.ecommerce.Entity.Coupon;
+import com.example.flight_booking.flight_booking.DAOModel.Coupon;
 import org.bson.types.ObjectId;
 import org.springframework.data.mongodb.repository.MongoRepository;
 import org.springframework.data.mongodb.repository.Query;
